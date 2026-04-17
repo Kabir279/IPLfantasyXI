@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CricketDraft — IPL 2026 Fantasy XI</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#F5B942;--gold-d:#C9901A;--navy:#080D28;--navy-m:#0F1535;
+  --surf:#1C2850;--surf2:#243060;--text:#EEF2FF;--muted:#7A8FCC;
+  --green:#27AE60;--gl:#2ECC71;--red:#C0392B;--purple:#8E44AD;
+  --teal:#1ABC9C;--orange:#E67E22;--border:rgba(245,185,66,0.13);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(245,185,66,.04),transparent 60%),radial-gradient(ellipse at 85% 20%,rgba(192,57,43,.05),transparent 50%);pointer-events:none;z-index:0}
+
+.page{display:none;position:relative;z-index:1}.page.active{display:block}
+
+/* LANDING */
+#landing{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:5rem;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),#FFF8DC,var(--gold-d));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 35px rgba(245,185,66,.35));line-height:1}
+.logo-sub{font-size:1rem;letter-spacing:6px;text-transform:uppercase;color:var(--muted);margin-top:.3rem;font-weight:500}
+.l-badge{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--red),#6B0000);border-radius:50px;padding:.35rem 1.1rem;font-size:.75rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-top:.8rem;box-shadow:0 4px 20px rgba(192,57,43,.4)}
+.divider{display:flex;align-items:center;gap:1rem;margin:2rem 0;width:100%;max-width:460px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;width:100%;max-width:440px}
+.btn{padding:.85rem 1.4rem;border-radius:12px;font-family:'Outfit',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:all .2s}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:var(--navy);box-shadow:0 4px 20px rgba(245,185,66,.3)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,185,66,.5)}
+.btn-out{background:transparent;color:var(--gold);border:2px solid var(--gold)}
+.btn-out:hover{background:rgba(245,185,66,.08);transform:translateY(-2px)}
+.btn-full{grid-column:1/-1}
+
+/* MODALS */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(5px);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.mo.open{display:flex}
+.modal{background:var(--navy-m);border:1px solid var(--border);border-radius:20px;padding:2.2rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative}
+.modal h2{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--gold);letter-spacing:2px;margin-bottom:1.3rem}
+.fg{margin-bottom:1.1rem}
+.fg label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:.45rem;font-weight:600}
+.fg input{width:100%;padding:.8rem .95rem;background:var(--surf);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s}
+.fg input:focus{border-color:var(--gold)}.fg input::placeholder{color:var(--muted)}
+.mx{position:absolute;top:.9rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
+.hint{font-size:.8rem;color:var(--muted);text-align:center;margin-top:.7rem}.hint a{color:var(--gold);cursor:pointer}
+.or{text-align:center;color:var(--muted);font-size:.82rem;margin:.8rem 0;position:relative}
+.or::before,.or::after{content:'';position:absolute;top:50%;width:44%;height:1px;background:var(--border)}
+.or::before{left:0}.or::after{right:0}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(8,13,40,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.2rem;z-index:100;gap:.8rem}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--gold);letter-spacing:2px;cursor:pointer;flex-shrink:0}
+.nav-tabs{display:flex;gap:.2rem;flex:1;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:.38rem .85rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--muted);background:none;border:none;transition:all .2s;white-space:nowrap;font-family:'Outfit',sans-serif}
+.ntab:hover{color:var(--text);background:var(--surf)}.ntab.active{color:var(--gold);background:rgba(245,185,66,.1)}
+.nav-user{display:flex;align-items:center;gap:.6rem;margin-left:auto;flex-shrink:0}
+.nav-av{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--red));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:white;cursor:pointer}
+.nav-name{font-size:.85rem;font-weight:600;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* LAYOUT */
+.main{padding-top:76px;min-height:100vh;padding-bottom:3rem}
+.con{max-width:1180px;margin:0 auto;padding:0 1.2rem}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px;margin-bottom:.3rem}
+.page-title span{color:var(--gold)}
+.page-sub{color:var(--muted);font-size:.88rem;margin-bottom:1.5rem}
+.card{background:var(--navy-m);border:1px solid var(--border);border-radius:16px;padding:1.4rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+
+/* LIVE CARD */
+.live-card{background:linear-gradient(135deg,rgba(192,57,43,.2),rgba(8,13,40,.7));border:2px solid rgba(192,57,43,.5);border-radius:20px;padding:1.8rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.live-card::after{content:'🏏';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:8rem;opacity:.05;pointer-events:none}
+.live-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(192,57,43,.3);border:1px solid rgba(255,68,68,.5);border-radius:50px;padding:.3rem .9rem;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FF7070;margin-bottom:.9rem}
+.live-dot{width:6px;height:6px;background:#FF4444;border-radius:50%;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.score-row:last-child{border-bottom:none}
+.score-team{font-weight:700;font-size:1rem}
+.score-runs{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold)}
+.score-overs{font-size:.75rem;color:var(--muted)}
+
+/* NEXT MATCH */
+.match-hero{background:linear-gradient(135deg,var(--navy-m),var(--surf));border:1px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:1rem;position:relative;overflow:hidden}
+.match-hero::after{content:'🏏';position:absolute;right:-15px;top:50%;transform:translateY(-50%);font-size:9rem;opacity:.04;pointer-events:none}
+.next-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(245,185,66,.15);border:1px solid rgba(245,185,66,.3);border-radius:50px;padding:.28rem .8rem;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem}
+.match-teams{display:flex;align-items:center;gap:1.5rem}
+.match-team{display:flex;align-items:center;gap:.9rem;flex:1}
+.match-team.right{flex-direction:row-reverse;text-align:right}
+.team-icon{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:2px solid var(--border);flex-shrink:0}
+.team-nm{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;line-height:1}
+.team-ab{font-size:.8rem;color:var(--muted);font-weight:600;letter-spacing:2px;margin-top:.1rem}
+.vs{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:var(--gold);opacity:.4}
+.match-meta{display:flex;gap:1.2rem;margin-top:1.3rem;font-size:.82rem;color:var(--muted);flex-wrap:wrap}
+
+/* PRED */
+.pred-card{background:linear-gradient(135deg,rgba(142,68,173,.18),rgba(8,13,40,.5));border:1px solid rgba(142,68,173,.28);border-radius:16px;padding:1.4rem;margin-bottom:1.5rem}
+.pred-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#C59AE8;margin-bottom:.3rem}
+.pred-btns{display:flex;gap:.7rem;margin-top:.9rem}
+.pred-btn{flex:1;padding:.85rem;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--text);font-family:'Outfit',sans-serif;font-weight:700;cursor:pointer;transition:all .2s;font-size:.88rem}
+.pred-btn:hover,.pred-btn.sel{border-color:#9B59B6;background:rgba(142,68,173,.18);color:#D4A8FF}
+.pred-btn.correct{border-color:var(--green);background:rgba(39,174,96,.15);color:var(--gl)}
+
+/* QUICK CARDS */
+.qcard{padding:1.2rem;background:var(--navy-m);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all .2s}
+.qcard:hover{border-color:rgba(245,185,66,.3);transform:translateY(-2px)}
+
+/* BUILDER */
+.builder-grid{display:grid;grid-template-columns:360px 1fr;gap:1.2rem;align-items:start}
+.pitch{background:linear-gradient(180deg,#1a5c2a 0%,#1d6b30 35%,#1a5c2a 70%,#155e25 100%);border-radius:16px;padding:1.2rem .8rem;min-height:580px;position:relative;overflow:hidden;border:2px solid rgba(255,255,255,.08)}
+.pitch::before{content:'';position:absolute;inset:18px;border:2px solid rgba(255,255,255,.12);border-radius:50%}
+.pitch-strip{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:55px;height:180px;background:rgba(210,180,100,.25);border:1px solid rgba(210,180,100,.35);border-radius:4px}
+.pitch-rows{position:relative;z-index:1;display:flex;flex-direction:column;gap:.6rem;padding:.3rem 0}
+.prow-lbl{font-size:.55rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.35);text-align:center;margin-bottom:.2rem;font-weight:600}
+.prow{display:flex;justify-content:center;gap:.4rem;flex-wrap:wrap}
+.pp{display:flex;flex-direction:column;align-items:center;gap:.25rem;position:relative;cursor:pointer}
+.pp-av{width:48px;height:48px;border-radius:50%;background:var(--surf);border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;overflow:hidden;position:relative;flex-shrink:0}
+.pp-av img{width:100%;height:100%;object-fit:cover}
+.pp-av.cap::after{content:'C';position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:900;color:var(--navy)}
+.pp-name{font-size:.56rem;font-weight:700;text-align:center;color:white;text-shadow:0 1px 3px rgba(0,0,0,.8);max-width:56px;line-height:1.2}
+.pp-price{font-size:.52rem;color:var(--gold);font-weight:700}
+.pp .rm{position:absolute;top:-5px;left:-5px;width:16px;height:16px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;cursor:pointer;color:white;font-weight:900;z-index:2;border:none;opacity:0;transition:opacity .2s}
+.pp:hover .rm{opacity:1}
+.budget-wrap{background:var(--navy-m);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.9rem}
+.budget-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.budget-lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600}
+.budget-num{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;color:var(--gold);line-height:1}
+.bbar{height:5px;background:var(--surf);border-radius:3px;overflow:hidden}
+.bfill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:3px;transition:width .4s ease}
+.xi-info{font-size:.76rem;color:var(--muted);font-weight:600;margin-top:.4rem}
+.xi-info span{color:var(--gold);font-weight:700}
+.req-chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.8rem}
+.req-chip{padding:.3rem .7rem;border-radius:50px;font-size:.7rem;font-weight:600;border:1px solid var(--border);color:var(--muted);transition:all .2s}
+.req-chip.ok{color:var(--gl);border-color:var(--green);background:rgba(39,174,96,.08)}
+.sbox{width:100%;padding:.68rem .95rem;background:var(--surf);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;margin-bottom:.7rem;transition:border-color .2s}
+.sbox:focus{border-color:var(--gold)}.sbox::placeholder{color:var(--muted)}
+.fchips{display:flex;gap:.45rem;margin-bottom:.8rem;flex-wrap:wrap}
+.fc{padding:.32rem .8rem;border-radius:50px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;transition:all .2s}
+.fc.active,.fc:hover{background:rgba(245,185,66,.1);border-color:var(--gold);color:var(--gold)}
+.plist{max-height:530px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding-right:3px}
+.plist::-webkit-scrollbar{width:3px}.plist::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.pcard{display:flex;align-items:center;gap:.75rem;padding:.72rem .9rem;background:var(--surf);border:1px solid transparent;border-radius:10px;cursor:pointer;transition:all .2s}
+.pcard:hover{border-color:var(--gold);background:rgba(245,185,66,.04)}
+.pcard.sel{border-color:var(--green);background:rgba(39,174,96,.07)}
+.pcard.dis{opacity:.38;cursor:not-allowed;pointer-events:none}
+.pav{width:42px;height:42px;border-radius:50%;background:var(--navy-m);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;overflow:hidden}
+.pav img{width:100%;height:100%;object-fit:cover}
+.pinfo{flex:1;min-width:0}.pname{font-weight:700;font-size:.88rem;line-height:1.2}
+.pmeta{display:flex;gap:.45rem;align-items:center;margin-top:.18rem}
+.ptag{font-size:.62rem;font-weight:700;letter-spacing:.8px;padding:.18rem .45rem;border-radius:4px}
+.prole{font-size:.62rem;color:var(--muted);font-weight:600}
+.pprice{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--gold);letter-spacing:1px;flex-shrink:0}
+.padd{width:28px;height:28px;border-radius:50%;background:var(--gold);border:none;color:var(--navy);font-size:1.1rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:middle;flex-shrink:0;transition:all .2s;line-height:1}
+.padd:hover{transform:scale(1.1)}.padd.added{background:var(--green)}
+
+/* INNER TABS */
+.itabs{display:flex;gap:.4rem;margin-bottom:1.3rem;border-bottom:1px solid var(--border)}
+.itab{padding:.55rem 1.1rem;font-size:.85rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--muted);font-family:'Outfit',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
+.itab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.itp{display:none}.itp.active{display:block}
+
+/* LEAGUES */
+.league-card{background:var(--navy-m);border:1px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.9rem;cursor:pointer;transition:all .2s}
+.league-card:hover{border-color:rgba(245,185,66,.35)}
+.lb-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;background:var(--surf);border-radius:12px;border:1px solid transparent;margin-bottom:.5rem}
+.lb-row.r1{background:linear-gradient(135deg,rgba(245,185,66,.13),rgba(245,185,66,.04));border-color:rgba(245,185,66,.25)}
+.lb-row.r2{background:linear-gradient(135deg,rgba(192,192,192,.08),transparent)}
+.lb-row.r3{background:linear-gradient(135deg,rgba(205,127,50,.08),transparent)}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;width:36px;text-align:center;color:var(--muted)}
+.r1 .lb-rank{color:var(--gold)}.r2 .lb-rank{color:#C0C0C0}.r3 .lb-rank{color:#CD7F32}
+.lb-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--red));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0}
+.lb-info{flex:1}.lb-name{font-weight:700;font-size:.9rem}.lb-sub{font-size:.74rem;color:var(--muted)}
+.lb-pts{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--gold);text-align:right}
+.lb-pts span{font-size:.7rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:600}
+
+/* STATS */
+.cap-card{background:var(--navy-m);border:1px solid var(--border);border-radius:16px;padding:1.3rem}
+.cap-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;margin-bottom:1.1rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.cap-badge{padding:.18rem .6rem;border-radius:5px;font-size:.62rem;font-weight:800;letter-spacing:1.5px}
+.ob{background:rgba(230,126,34,.18);color:var(--orange);border:1px solid rgba(230,126,34,.35)}
+.pb{background:rgba(142,68,173,.18);color:#C59AE8;border:1px solid rgba(142,68,173,.35)}
+.cap-row{display:flex;align-items:center;gap:.75rem;padding:.62rem 0;border-bottom:1px solid var(--border)}
+.cap-row:last-child{border-bottom:none}
+.crnum{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--muted);width:32px;text-align:center}
+.crnum.first{color:var(--gold)}
+.crinfo{flex:1}.crname{font-weight:600;font-size:.86rem}.crteam{font-size:.72rem;color:var(--muted)}
+.crstat{font-family:'Bebas Neue',sans-serif;font-size:1.45rem}
+.live-tag{font-size:.65rem;background:rgba(39,174,96,.2);color:var(--gl);border:1px solid rgba(39,174,96,.3);border-radius:4px;padding:.1rem .4rem;font-weight:700;letter-spacing:1px;margin-left:.4rem}
+
+/* POINTS TABLE */
+.pts-table{width:100%;border-collapse:collapse;font-size:.84rem}
+.pts-table th{padding:.6rem .8rem;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+.pts-table td{padding:.7rem .8rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.pts-table tr:last-child td{border-bottom:none}
+.pts-table tr:hover td{background:rgba(255,255,255,.02)}
+.pos-n{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted)}
+.p1{color:var(--gold)}.p2{color:#C0C0C0}.p3{color:#CD7F32}.p4{color:var(--teal)}
+.pts-num{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold)}
+.nrr-p{color:var(--gl)}.nrr-n{color:#FF7070}
+.playoff-border td{border-bottom:2px dashed rgba(245,185,66,.25)!important}
+.team-tag{display:inline-flex;align-items:center;gap:.4rem;font-weight:700}
+
+/* SCHEDULE */
+.sched-item{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;background:var(--surf);border-radius:12px;margin-bottom:.5rem;border:1px solid transparent;transition:all .2s}
+.sched-item.live-now{border-color:#FF4444;background:rgba(192,57,43,.1);animation:borderPulse 2s infinite}
+@keyframes borderPulse{0%,100%{border-color:rgba(255,68,68,.5)}50%{border-color:rgba(255,68,68,1)}}
+.sched-item.next-up{border-color:var(--gold);background:rgba(245,185,66,.04)}
+.sched-item.done{opacity:.6}
+.sched-item.playoff{background:linear-gradient(135deg,rgba(142,68,173,.15),var(--surf));border-color:rgba(142,68,173,.25)}
+.snum{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted);width:32px;flex-shrink:0}
+.steams{flex:1}.steams b{font-weight:700}.svenue{font-size:.73rem;color:var(--muted);margin-top:.1rem}
+.sdate{font-size:.78rem;color:var(--muted);text-align:right}.sresult{font-size:.8rem;font-weight:600;text-align:right;margin-top:.1rem}
+
+/* CAPTAIN MODAL */
+.cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-top:.9rem}
+.cap-opt{background:var(--surf);border:2px solid var(--border);border-radius:12px;padding:.9rem .4rem;text-align:center;cursor:pointer;transition:all .2s}
+.cap-opt:hover,.cap-opt.sel{border-color:var(--gold);background:rgba(245,185,66,.07)}
+.cap-opt-name{font-size:.75rem;font-weight:700;margin-top:.4rem}
+.cap-opt-price{font-size:.68rem;color:var(--gold);font-weight:600}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2000;gap:1rem}
+.loading-logo{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),#FFF8DC,var(--gold-d));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.spinner-lg{width:40px;height:40px;border:3px solid rgba(245,185,66,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--muted);font-size:.9rem}
+
+/* TOAST */
+.toast-con{position:fixed;bottom:1.8rem;right:1.8rem;z-index:9999;display:flex;flex-direction:column;gap:.6rem}
+.toast{padding:.85rem 1.3rem;border-radius:12px;font-weight:600;font-size:.87rem;box-shadow:0 8px 30px rgba(0,0,0,.35);animation:sup .3s ease;min-width:230px}
+@keyframes sup{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+.t-s{background:var(--green);color:white}.t-e{background:var(--red);color:white}
+.t-i{background:var(--surf2);color:var(--text);border:1px solid var(--border)}
+.t-g{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:var(--navy)}
+
+/* DATA FRESHNESS */
+.freshness-bar{background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.2);border-radius:8px;padding:.4rem .8rem;font-size:.73rem;color:var(--gl);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+
+/* TEAM COLOURS */
+.tc-CSK{background:rgba(255,191,0,.14);color:#FFD700}.tc-MI{background:rgba(4,90,180,.18);color:#4AABFF}
+.tc-RCB{background:rgba(192,0,0,.18);color:#FF7070}.tc-KKR{background:rgba(58,15,112,.28);color:#C59AE8}
+.tc-DC{background:rgba(0,68,153,.18);color:#6699FF}.tc-SRH{background:rgba(255,110,0,.14);color:#FF8C42}
+.tc-PBKS{background:rgba(220,30,30,.18);color:#FF8080}.tc-RR{background:rgba(255,45,161,.14);color:#FF6EC7}
+.tc-GT{background:rgba(0,120,130,.18);color:#4ECDC4}.tc-LSG{background:rgba(0,130,180,.14);color:#5BC8F5}
+
+.fade-in{animation:fi .35s ease}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.empty{text-align:center;padding:2.5rem;color:var(--muted)}.empty .em{font-size:3.5rem;margin-bottom:.8rem}.empty h3{color:var(--text);margin-bottom:.4rem}
+@media(max-width:900px){.builder-grid{grid-template-columns:1fr}.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g3{grid-template-columns:1fr}.cta-grid{grid-template-columns:1fr}.match-teams{gap:.7rem}.vs{font-size:2rem}.pts-table{font-size:.75rem}}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">CricketDraft</div>
+  <div class="spinner-lg"></div>
+  <div class="loading-text" id="loading-text">Fetching live IPL data...</div>
+</div>
+
+<!-- LANDING -->
+<div id="landing" class="page">
+  <div class="logo">CricketDraft</div>
+  <div class="logo-sub">IPL 2026 Fantasy XI</div>
+  <div class="l-badge">🏆 TATA IPL 2026 · 74 Matches</div>
+  <div class="divider"><span>🏏</span></div>
+  <div style="max-width:440px;color:var(--muted);font-size:.95rem;line-height:1.7;margin-bottom:1.8rem">
+    Pick your Dream XI before every match, predict the winner for +100 pts, set a captain for 2× points, and battle friends in private leagues.
+  </div>
+  <div class="cta-grid">
+    <button class="btn btn-gold" onclick="openModal('m-reg')">Create Account</button>
+    <button class="btn btn-out" onclick="openModal('m-login')">Sign In</button>
+    <button class="btn btn-out btn-full" onclick="openModal('m-join')">🔗 Join a League</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="page">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goTab('dashboard')">CD</div>
+    <div class="nav-tabs">
+      <button class="ntab active" onclick="goTab('dashboard')">🏠 Home</button>
+      <button class="ntab" onclick="goTab('builder')">⚡ Pick XI</button>
+      <button class="ntab" onclick="goTab('leagues')">🏆 Leagues</button>
+      <button class="ntab" onclick="goTab('stats')">📊 Stats</button>
+      <button class="ntab" onclick="goTab('table')">📋 Table</button>
+      <button class="ntab" onclick="goTab('schedule')">📅 Schedule</button>
+    </div>
+    <div class="nav-user">
+      <div class="nav-av" id="nav-av" onclick="signOut()" title="Click to sign out">?</div>
+      <div class="nav-name" id="nav-nm">-</div>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard" class="tab con fade-in">
+      <div style="margin-bottom:1.2rem">
+        <div class="page-title">Hey, <span id="dash-name">Player</span> 👋</div>
+        <div class="page-sub" id="dash-sub">IPL 2026 Fantasy</div>
+      </div>
+
+      <div class="freshness-bar" id="freshness-bar">
+        <div class="live-dot"></div>
+        <span id="freshness-text">Fetching live data...</span>
+        <span style="margin-left:auto;cursor:pointer;color:var(--gold)" onclick="refreshAllData()">↻ Refresh</span>
+      </div>
+
+      <!-- LIVE MATCH -->
+      <div id="live-section" style="display:none">
+        <div class="live-card">
+          <div class="live-badge"><div class="live-dot"></div>🔴 LIVE NOW · <span id="live-match-label"></span></div>
+          <div id="live-scores"></div>
+          <div class="match-meta" id="live-meta" style="margin-top:.8rem"></div>
+        </div>
+      </div>
+
+      <!-- NEXT MATCH -->
+      <div id="next-section" style="display:none">
+        <div class="match-hero">
+          <div class="next-badge">⭐ NEXT MATCH · #<span id="next-num">-</span></div>
+          <div class="match-teams" id="next-teams"></div>
+          <div class="match-meta" id="next-meta"></div>
+        </div>
+        <div class="pred-card">
+          <div class="pred-title">🔮 Match Prediction — Win 100 Points!</div>
+          <div style="font-size:.84rem;color:var(--muted)">Lock your prediction before the match starts.</div>
+          <div class="pred-btns" id="pred-btns"></div>
+          <div id="pred-msg" style="margin-top:.7rem;font-size:.82rem;color:var(--muted);display:none"></div>
+        </div>
+      </div>
+
+      <div class="g3" style="margin-bottom:1.5rem">
+        <div class="qcard" onclick="goTab('builder')">
+          <div style="font-size:1.8rem;margin-bottom:.45rem">⚡</div>
+          <div style="font-weight:700;font-size:.95rem">Build Your XI</div>
+          <div style="font-size:.76rem;color:var(--muted);margin-top:.2rem" id="builder-qsub">Pick for next match</div>
+          <div style="font-size:.76rem;font-weight:600;margin-top:.7rem;color:var(--red)" id="xi-dash-status">Not submitted yet</div>
+        </div>
+        <div class="qcard" onclick="goTab('leagues')">
+          <div style="font-size:1.8rem;margin-bottom:.45rem">🏆</div>
+          <div style="font-weight:700;font-size:.95rem">Your Leagues</div>
+          <div style="font-size:.76rem;color:var(--muted);margin-top:.2rem">Leaderboards &amp; invite codes</div>
+          <div style="font-size:.76rem;font-weight:600;margin-top:.7rem;color:var(--gold)" id="league-dash-count">0 leagues joined</div>
+        </div>
+        <div class="qcard" onclick="goTab('stats')">
+          <div style="font-size:1.8rem;margin-bottom:.45rem">📊</div>
+          <div style="font-weight:700;font-size:.95rem">Live Stats</div>
+          <div style="font-size:.76rem;color:var(--muted);margin-top:.2rem">Orange &amp; Purple Cap</div>
+          <div style="font-size:.76rem;font-weight:600;margin-top:.7rem;color:var(--teal)" id="stats-freshness">Loading...</div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:.4rem">Your Total Points</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--gold);line-height:1" id="dash-total">0</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:.3rem">All matches combined</div>
+        </div>
+        <div class="card" id="last-result-card">
+          <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:.4rem">Last Result</div>
+          <div style="font-size:.9rem;font-weight:700;color:var(--gl)" id="last-result-title">Loading...</div>
+          <div style="font-size:.8rem;color:var(--muted);margin-top:.3rem" id="last-result-detail"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM BUILDER -->
+    <div id="tab-builder" class="tab con fade-in" style="display:none">
+      <div class="page-title">Build Your <span>XI</span></div>
+      <div class="page-sub" id="builder-match-info">Loading next match...</div>
+      <div style="background:var(--surf);border-radius:10px;padding:.7rem 1.1rem;margin-bottom:1.2rem;font-size:.78rem;color:var(--muted);display:flex;gap:1.2rem;flex-wrap:wrap">
+        <span>Min: <b style="color:var(--text)">3 BAT · 3 BOWL · 1 WK · 2 AR</b></span>
+        <span>Budget: <b style="color:var(--gold)">100</b></span>
+        <span>Captain: <b style="color:var(--gold)">2× all points</b></span>
+        <span>+ 2 free picks of your choice</span>
+      </div>
+      <div class="builder-grid">
+        <div>
+          <div class="budget-wrap">
+            <div class="budget-top"><div class="budget-lbl">Budget Remaining</div><div class="budget-num" id="budget-num">100</div></div>
+            <div class="bbar"><div class="bfill" id="bfill" style="width:100%"></div></div>
+            <div class="xi-info" id="xi-info">Selected: <span>0</span>/11 · Captain: <span>None</span></div>
+          </div>
+          <div class="req-chips">
+            <div class="req-chip" id="rc-bat">🏏 BAT 0/3</div>
+            <div class="req-chip" id="rc-bowl">🎳 BOWL 0/3</div>
+            <div class="req-chip" id="rc-wk">🧤 WK 0/1</div>
+            <div class="req-chip" id="rc-ar">⭐ AR 0/2</div>
+            <div class="req-chip" id="rc-tot">👥 0/11</div>
+          </div>
+          <div class="pitch"><div class="pitch-strip"></div><div class="pitch-rows" id="pitch-rows"></div></div>
+          <div style="display:flex;gap:.7rem;margin-top:.8rem;flex-wrap:wrap">
+            <button class="btn btn-out" style="flex:1" onclick="openCapModal()">👑 Set Captain</button>
+            <button class="btn btn-gold" style="flex:1" onclick="submitXI()">✅ Submit XI</button>
+          </div>
+          <button class="btn" style="width:100%;margin-top:.5rem;background:var(--surf);color:var(--muted)" onclick="clearXI()">🗑 Clear All</button>
+        </div>
+        <div>
+          <input class="sbox" type="text" placeholder="🔍 Search players..." id="psearch" oninput="renderPlayers()">
+          <div class="fchips" id="filter-chips">
+            <button class="fc active" onclick="setFilter('all',this)">All</button>
+            <button class="fc" onclick="setFilter('BAT',this)">🏏 Batters</button>
+            <button class="fc" onclick="setFilter('BOWL',this)">🎳 Bowlers</button>
+            <button class="fc" onclick="setFilter('WK',this)">🧤 Keepers</button>
+            <button class="fc" onclick="setFilter('AR',this)">⭐ All-rounders</button>
+            <button class="fc" id="fc-t1" onclick="setFilter('T1',this)">Team 1</button>
+            <button class="fc" id="fc-t2" onclick="setFilter('T2',this)">Team 2</button>
+          </div>
+          <div class="plist" id="plist"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEAGUES -->
+    <div id="tab-leagues" class="tab con fade-in" style="display:none">
+      <div class="page-title">🏆 <span>Leagues</span></div>
+      <div style="background:rgba(245,185,66,.08);border:1px solid rgba(245,185,66,.2);border-radius:10px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.82rem;color:var(--muted)">
+        ℹ️ Leagues are stored on this device. To share scores across devices, all players should use the same browser and device, or you can manually add points after each match.
+      </div>
+      <div class="itabs">
+        <button class="itab active" onclick="switchItab('my-leagues',this)">My Leagues</button>
+        <button class="itab" onclick="switchItab('create-l',this)">Create League</button>
+        <button class="itab" onclick="switchItab('join-l',this)">Join League</button>
+      </div>
+      <div id="my-leagues" class="itp active"><div id="my-leagues-list">
+        <div class="empty"><div class="em">🏆</div><h3>No leagues yet</h3><p>Create a league and share the code with friends!</p>
+          <button class="btn btn-gold" style="margin-top:1rem" onclick="switchItab('create-l',null)">Create League</button></div>
+      </div></div>
+      <div id="create-l" class="itp">
+        <div class="card" style="max-width:480px">
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:2px;color:var(--gold);margin-bottom:1.3rem">Create Private League</h2>
+          <div class="fg"><label>League Name</label><input type="text" id="l-name" placeholder="e.g. Office Cricket Mates"/></div>
+          <div class="fg"><label>Description (optional)</label><input type="text" id="l-desc" placeholder="May the best XI win!"/></div>
+          <button class="btn btn-gold" style="width:100%" onclick="createLeague()">🏆 Create League</button>
+        </div>
+      </div>
+      <div id="join-l" class="itp">
+        <div class="card" style="max-width:480px">
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:2px;color:var(--gold);margin-bottom:1.3rem">Join a League</h2>
+          <div class="fg"><label>League Code</label><input type="text" id="l-code" placeholder="e.g. XKQZ7A" style="text-transform:uppercase;letter-spacing:4px;font-size:1.1rem;text-align:center" oninput="this.value=this.value.toUpperCase()"/></div>
+          <button class="btn btn-gold" style="width:100%" onclick="joinByCode()">🔗 Join League</button>
+        </div>
+      </div>
+      <div id="league-detail" style="display:none;margin-top:1.2rem">
+        <div style="display:flex;align-items:center;gap:.9rem;margin-bottom:1.3rem">
+          <button onclick="closeLeagueDetail()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem">← Back</button>
+          <div style="flex:1">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:2px" id="ld-name">-</div>
+            <div style="font-size:.78rem;color:var(--muted)">Invite code: <span id="ld-code" style="color:var(--gold);font-weight:700;letter-spacing:3px"></span></div>
+          </div>
+          <button class="btn btn-out" style="padding:.45rem .9rem;font-size:.78rem" onclick="shareLeague()">📤 Share</button>
+        </div>
+        <div id="ld-board"></div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div id="tab-stats" class="tab con fade-in" style="display:none">
+      <div class="page-title">📊 <span>Tournament Stats</span></div>
+      <div class="page-sub" id="stats-updated-at">Fetching live stats...</div>
+      <div class="g2" style="margin-bottom:1.2rem">
+        <div class="cap-card">
+          <div class="cap-title">🟠 Orange Cap <span class="cap-badge ob">MOST RUNS</span></div>
+          <div id="orange-cap"></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-title">🟣 Purple Cap <span class="cap-badge pb">MOST WICKETS</span></div>
+          <div id="purple-cap"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--gold);margin-bottom:1rem">📋 Points System</div>
+        <div class="g3" style="gap:.7rem">
+          <div style="background:var(--surf);border-radius:10px;padding:.9rem">
+            <div style="font-weight:700;color:var(--gold);margin-bottom:.5rem">🏏 BATTING</div>
+            <div style="font-size:.78rem;line-height:2;color:var(--muted)">1 pt per run<br>+25 pts at 50 runs<br>+50 pts at 100 runs<br>+75 pts at 150 runs</div>
+          </div>
+          <div style="background:var(--surf);border-radius:10px;padding:.9rem">
+            <div style="font-weight:700;color:#C59AE8;margin-bottom:.5rem">🎳 BOWLING</div>
+            <div style="font-size:.78rem;line-height:2;color:var(--muted)">30 pts per wicket<br>+25 pts for 3 wkts<br>+50 pts for 5 wkts<br>+75 pts for 6+ wkts</div>
+          </div>
+          <div style="background:var(--surf);border-radius:10px;padding:.9rem">
+            <div style="font-weight:700;color:var(--teal);margin-bottom:.5rem">🤸 FIELDING</div>
+            <div style="font-size:.78rem;line-height:2;color:var(--muted)">15 pts per catch (field)<br>12 pts per catch (WK)<br>30 pts stumping<br>30 pts run out<br>+75 for 3+ contributions</div>
+          </div>
+        </div>
+        <div style="margin-top:.8rem;padding:.75rem;background:rgba(245,185,66,.09);border-radius:8px;font-size:.82rem;color:var(--gold);font-weight:600">
+          👑 Captain earns 2× all points &nbsp;·&nbsp; 🔮 Correct match prediction = +100 pts
+        </div>
+      </div>
+    </div>
+
+    <!-- POINTS TABLE -->
+    <div id="tab-table" class="tab con fade-in" style="display:none">
+      <div class="page-title">📋 IPL 2026 <span>Points Table</span></div>
+      <div class="page-sub" id="table-updated-at">Fetching live table...</div>
+      <div class="card"><table class="pts-table" id="pts-table"><tr><td style="color:var(--muted);padding:2rem;text-align:center">Loading...</td></tr></table></div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:.8rem">
+        Top 4 qualify for playoffs. Top 2 → Qualifier 1 (26 May). Final: 31 May 2026.
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div id="tab-schedule" class="tab con fade-in" style="display:none">
+      <div class="page-title">📅 IPL 2026 <span>Schedule</span></div>
+      <div class="page-sub">70 league matches + 4 knockouts · 28 March – 31 May 2026</div>
+      <div id="sched-list"><div style="color:var(--muted);text-align:center;padding:2rem">Loading schedule...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="mo" id="m-reg">
+  <div class="modal">
+    <button class="mx" onclick="closeModal('m-reg')">✕</button>
+    <h2>Join the Game</h2>
+    <div class="fg"><label>Your Name</label><input type="text" id="reg-name" placeholder="e.g. Rahul"/></div>
+    <div class="fg"><label>Username</label><input type="text" id="reg-user" placeholder="Choose a username"/></div>
+    <div class="fg"><label>Password</label><input type="password" id="reg-pass" placeholder="Create a password"/></div>
+    <button class="btn btn-gold" style="width:100%" onclick="register()">🏏 Start Playing</button>
+    <div class="or">or</div>
+    <button class="btn btn-out" style="width:100%;font-size:.87rem" onclick="guestIn()">👤 Continue as Guest</button>
+    <p class="hint">Have an account? <a onclick="closeModal('m-reg');openModal('m-login')">Sign in</a></p>
+  </div>
+</div>
+<div class="mo" id="m-login">
+  <div class="modal">
+    <button class="mx" onclick="closeModal('m-login')">✕</button>
+    <h2>Welcome Back</h2>
+    <div class="fg"><label>Username</label><input type="text" id="log-user" placeholder="Your username"/></div>
+    <div class="fg"><label>Password</label><input type="password" id="log-pass" placeholder="Your password"/></div>
+    <button class="btn btn-gold" style="width:100%;margin-top:.3rem" onclick="login()">🏏 Sign In</button>
+    <p class="hint">New here? <a onclick="closeModal('m-login');openModal('m-reg')">Create account</a></p>
+  </div>
+</div>
+<div class="mo" id="m-join">
+  <div class="modal">
+    <button class="mx" onclick="closeModal('m-join')">✕</button>
+    <h2>Join League</h2>
+    <p style="color:var(--muted);margin-bottom:1.2rem;font-size:.88rem">Enter the 6-letter code your friend shared.</p>
+    <div class="fg"><label>League Code</label><input type="text" id="join-code-landing" placeholder="e.g. XKQZ7A" style="text-transform:uppercase;letter-spacing:4px;font-size:1.1rem;text-align:center" oninput="this.value=this.value.toUpperCase()"/></div>
+    <button class="btn btn-gold" style="width:100%" onclick="openModal('m-reg');closeModal('m-join')">🔗 Create Account &amp; Join</button>
+  </div>
+</div>
+<div class="mo" id="m-cap">
+  <div class="modal" style="max-width:480px">
+    <button class="mx" onclick="closeModal('m-cap')">✕</button>
+    <h2>👑 Choose Captain</h2>
+    <p style="color:var(--muted);font-size:.85rem">Your captain earns 2× all points this match.</p>
+    <div class="cap-grid" id="cap-grid"></div>
+    <button class="btn btn-gold" style="width:100%;margin-top:1.2rem" onclick="confirmCap()">Confirm Captain</button>
+  </div>
+</div>
+
+<div class="toast-con" id="toast-con"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════
+const API_KEY = '7f182ef1-b21e-4bb9-ba84-595b5b8d381c';
+const API_BASE = 'https://api.cricapi.com/v1';
+const IPL_SERIES_ID = 'e7919b1e-b730-4ece-b872-0c11b5e5b658'; // IPL 2026
+
+// CORS proxy — needed because browser can't call cricapi directly from file:// or some hosts
+// We'll try direct first, then fall back to cached data
+const PROXY = 'https://api.allorigins.win/get?url=';
+
+// ═══════════════════════════════════════════════
+//  TEAM METADATA
+// ═══════════════════════════════════════════════
+const TEAM_NAMES = {
+  'Mumbai Indians':'MI','Punjab Kings':'PBKS','Royal Challengers Bengaluru':'RCB',
+  'Royal Challengers Bangalore':'RCB','Chennai Super Kings':'CSK',
+  'Kolkata Knight Riders':'KKR','Delhi Capitals':'DC','Sunrisers Hyderabad':'SRH',
+  'Rajasthan Royals':'RR','Gujarat Titans':'GT','Lucknow Super Giants':'LSG'
+};
+const ABBR_TO_FULL = {
+  MI:'Mumbai Indians',PBKS:'Punjab Kings',RCB:'Royal Challengers Bengaluru',
+  CSK:'Chennai Super Kings',KKR:'Kolkata Knight Riders',DC:'Delhi Capitals',
+  SRH:'Sunrisers Hyderabad',RR:'Rajasthan Royals',GT:'Gujarat Titans',LSG:'Lucknow Super Giants'
+};
+const TEAM_ICONS = {
+  GT:{e:'⚡',bg:'linear-gradient(135deg,#005F6A,#003040)'},
+  KKR:{e:'⚔️',bg:'linear-gradient(135deg,#3A0F70,#1A0030)'},
+  RCB:{e:'🔥',bg:'linear-gradient(135deg,#C0000C,#5B0000)'},
+  MI:{e:'💙',bg:'linear-gradient(135deg,#004C9B,#00235A)'},
+  CSK:{e:'🦁',bg:'linear-gradient(135deg,#FFBE00,#CC7700)'},
+  SRH:{e:'🌅',bg:'linear-gradient(135deg,#FF6200,#9B3A00)'},
+  PBKS:{e:'🦁',bg:'linear-gradient(135deg,#D03030,#5B0000)'},
+  RR:{e:'👑',bg:'linear-gradient(135deg,#FF2DA1,#8B0057)'},
+  DC:{e:'🦅',bg:'linear-gradient(135deg,#004499,#001A55)'},
+  LSG:{e:'🔵',bg:'linear-gradient(135deg,#0082B4,#003A55)'},
+};
+
+// ═══════════════════════════════════════════════
+//  SCHEDULE (static - won't change mid-season)
+//  Matches 1-24 done, 25-70 upcoming, 71-74 knockouts
+// ═══════════════════════════════════════════════
+const SCHEDULE_DATA = [
+  {n:1, t:'RCB vs SRH', d:'2026-03-28', v:'M Chinnaswamy Stadium, Bengaluru', r:'RCB won by 6 wkts'},
+  {n:2, t:'MI vs KKR', d:'2026-03-29', v:'Wankhede Stadium, Mumbai', r:'MI won by 6 wkts'},
+  {n:3, t:'RR vs CSK', d:'2026-03-30', v:'ACA Cricket Stadium, Guwahati', r:'RR won by 6 wkts'},
+  {n:4, t:'PBKS vs GT', d:'2026-03-31', v:'New International Cricket Stadium, Mohali', r:'PBKS won by 3 wkts'},
+  {n:5, t:'LSG vs DC', d:'2026-04-01', v:'Ekana Cricket Stadium, Lucknow', r:'DC won by 6 wkts'},
+  {n:6, t:'KKR vs SRH', d:'2026-04-02', v:'Eden Gardens, Kolkata', r:'SRH won by 65 runs'},
+  {n:7, t:'CSK vs PBKS', d:'2026-04-03', v:'MA Chidambaram Stadium, Chennai', r:'PBKS won by 5 wkts'},
+  {n:8, t:'DC vs MI', d:'2026-04-04', v:'Arun Jaitley Stadium, Delhi', r:'DC won by 6 wkts'},
+  {n:9, t:'GT vs RR', d:'2026-04-04', v:'Narendra Modi Stadium, Ahmedabad', r:'RR won by 6 runs'},
+  {n:10, t:'SRH vs LSG', d:'2026-04-05', v:'Rajiv Gandhi International Stadium, Hyderabad', r:'LSG won by 5 wkts'},
+  {n:11, t:'RCB vs CSK', d:'2026-04-05', v:'M Chinnaswamy Stadium, Bengaluru', r:'RCB won by 43 runs'},
+  {n:12, t:'KKR vs PBKS', d:'2026-04-06', v:'Eden Gardens, Kolkata', r:'No result (rain)'},
+  {n:13, t:'RR vs MI', d:'2026-04-07', v:'ACA Cricket Stadium, Guwahati', r:'RR won by 27 runs'},
+  {n:14, t:'DC vs GT', d:'2026-04-08', v:'Arun Jaitley Stadium, Delhi', r:'GT won by 1 run'},
+  {n:15, t:'KKR vs LSG', d:'2026-04-09', v:'Eden Gardens, Kolkata', r:'LSG won by 3 wkts'},
+  {n:16, t:'RR vs RCB', d:'2026-04-10', v:'ACA Cricket Stadium, Guwahati', r:'RR won by 6 wkts'},
+  {n:17, t:'PBKS vs SRH', d:'2026-04-11', v:'New International Cricket Stadium, Mohali', r:'PBKS won by 6 wkts'},
+  {n:18, t:'CSK vs DC', d:'2026-04-11', v:'MA Chidambaram Stadium, Chennai', r:'CSK won by 23 runs'},
+  {n:19, t:'LSG vs GT', d:'2026-04-12', v:'Ekana Cricket Stadium, Lucknow', r:'GT won by 7 wkts'},
+  {n:20, t:'MI vs RCB', d:'2026-04-12', v:'Wankhede Stadium, Mumbai', r:'RCB won by 18 runs'},
+  {n:21, t:'SRH vs RR', d:'2026-04-13', v:'Rajiv Gandhi International Stadium, Hyderabad', r:'SRH won by 57 runs'},
+  {n:22, t:'CSK vs KKR', d:'2026-04-14', v:'MA Chidambaram Stadium, Chennai', r:'CSK won by 32 runs'},
+  {n:23, t:'RCB vs LSG', d:'2026-04-15', v:'M Chinnaswamy Stadium, Bengaluru', r:'RCB won by 5 wkts'},
+  {n:24, t:'MI vs PBKS', d:'2026-04-16', v:'Wankhede Stadium, Mumbai', r:'PBKS won by 7 wkts'},
+  {n:25, t:'GT vs KKR', d:'2026-04-17', v:'Narendra Modi Stadium, Ahmedabad', r:''},
+  {n:26, t:'RCB vs DC', d:'2026-04-18', v:'M Chinnaswamy Stadium, Bengaluru', r:''},
+  {n:27, t:'SRH vs CSK', d:'2026-04-18', v:'Rajiv Gandhi International Stadium, Hyderabad', r:''},
+  {n:28, t:'KKR vs RR', d:'2026-04-19', v:'Eden Gardens, Kolkata', r:''},
+  {n:29, t:'PBKS vs LSG', d:'2026-04-19', v:'New International Cricket Stadium, Mohali', r:''},
+  {n:30, t:'GT vs MI', d:'2026-04-20', v:'Narendra Modi Stadium, Ahmedabad', r:''},
+  {n:31, t:'SRH vs DC', d:'2026-04-21', v:'Rajiv Gandhi International Stadium, Hyderabad', r:''},
+  {n:32, t:'LSG vs RR', d:'2026-04-22', v:'Ekana Cricket Stadium, Lucknow', r:''},
+  {n:33, t:'MI vs CSK', d:'2026-04-23', v:'Wankhede Stadium, Mumbai', r:''},
+  {n:34, t:'RCB vs GT', d:'2026-04-24', v:'M Chinnaswamy Stadium, Bengaluru', r:''},
+  {n:35, t:'DC vs PBKS', d:'2026-04-25', v:'Arun Jaitley Stadium, Delhi', r:''},
+  {n:36, t:'RR vs SRH', d:'2026-04-25', v:'Sawai Mansingh Stadium, Jaipur', r:''},
+  {n:37, t:'CSK vs GT', d:'2026-04-26', v:'MA Chidambaram Stadium, Chennai', r:''},
+  {n:38, t:'LSG vs KKR', d:'2026-04-26', v:'Ekana Cricket Stadium, Lucknow', r:''},
+  {n:39, t:'DC vs RCB', d:'2026-04-27', v:'Arun Jaitley Stadium, Delhi', r:''},
+  {n:40, t:'PBKS vs RR', d:'2026-04-28', v:'New International Cricket Stadium, Mohali', r:''},
+  {n:41, t:'MI vs SRH', d:'2026-04-29', v:'Wankhede Stadium, Mumbai', r:''},
+  {n:42, t:'GT vs RCB', d:'2026-04-30', v:'Narendra Modi Stadium, Ahmedabad', r:''},
+  {n:43, t:'RR vs DC', d:'2026-05-01', v:'Sawai Mansingh Stadium, Jaipur', r:''},
+  {n:44, t:'CSK vs MI', d:'2026-05-02', v:'MA Chidambaram Stadium, Chennai', r:''},
+  {n:45, t:'SRH vs KKR', d:'2026-05-03', v:'Rajiv Gandhi International Stadium, Hyderabad', r:''},
+  {n:46, t:'GT vs PBKS', d:'2026-05-03', v:'Narendra Modi Stadium, Ahmedabad', r:''},
+  {n:47, t:'MI vs LSG', d:'2026-05-04', v:'Wankhede Stadium, Mumbai', r:''},
+  {n:48, t:'DC vs CSK', d:'2026-05-05', v:'Arun Jaitley Stadium, Delhi', r:''},
+  {n:49, t:'SRH vs PBKS', d:'2026-05-06', v:'Rajiv Gandhi International Stadium, Hyderabad', r:''},
+  {n:50, t:'LSG vs RCB', d:'2026-05-07', v:'Ekana Cricket Stadium, Lucknow', r:''},
+  {n:51, t:'DC vs KKR', d:'2026-05-08', v:'Arun Jaitley Stadium, Delhi', r:''},
+  {n:52, t:'RR vs GT', d:'2026-05-09', v:'Sawai Mansingh Stadium, Jaipur', r:''},
+  {n:53, t:'CSK vs LSG', d:'2026-05-10', v:'MA Chidambaram Stadium, Chennai', r:''},
+  {n:54, t:'RCB vs MI', d:'2026-05-10', v:'Shaheed Veer Narayan Singh Stadium, Raipur', r:''},
+  {n:55, t:'PBKS vs DC', d:'2026-05-11', v:'HPCA Stadium, Dharamshala', r:''},
+  {n:56, t:'GT vs SRH', d:'2026-05-12', v:'Narendra Modi Stadium, Ahmedabad', r:''},
+  {n:57, t:'RCB vs KKR', d:'2026-05-13', v:'Shaheed Veer Narayan Singh Stadium, Raipur', r:''},
+  {n:58, t:'PBKS vs MI', d:'2026-05-14', v:'HPCA Stadium, Dharamshala', r:''},
+  {n:59, t:'LSG vs CSK', d:'2026-05-15', v:'Ekana Cricket Stadium, Lucknow', r:''},
+  {n:60, t:'KKR vs GT', d:'2026-05-16', v:'Eden Gardens, Kolkata', r:''},
+  {n:61, t:'PBKS vs RCB', d:'2026-05-17', v:'HPCA Stadium, Dharamshala', r:''},
+  {n:62, t:'DC vs RR', d:'2026-05-17', v:'Arun Jaitley Stadium, Delhi', r:''},
+  {n:63, t:'CSK vs SRH', d:'2026-05-18', v:'MA Chidambaram Stadium, Chennai', r:''},
+  {n:64, t:'RR vs LSG', d:'2026-05-19', v:'Sawai Mansingh Stadium, Jaipur', r:''},
+  {n:65, t:'KKR vs MI', d:'2026-05-20', v:'Eden Gardens, Kolkata', r:''},
+  {n:66, t:'GT vs CSK', d:'2026-05-21', v:'Narendra Modi Stadium, Ahmedabad', r:''},
+  {n:67, t:'SRH vs RCB', d:'2026-05-22', v:'Rajiv Gandhi International Stadium, Hyderabad', r:''},
+  {n:68, t:'LSG vs PBKS', d:'2026-05-23', v:'Ekana Cricket Stadium, Lucknow', r:''},
+  {n:69, t:'MI vs RR', d:'2026-05-24', v:'Wankhede Stadium, Mumbai', r:''},
+  {n:70, t:'KKR vs DC', d:'2026-05-24', v:'Eden Gardens, Kolkata', r:''},
+  // Knockouts: Q1=71, Q2=72, Eliminator=73, Final=74
+  {n:71, t:'Qualifier 1: TBC vs TBC', d:'2026-05-26', v:'TBC', r:'', playoff:true},
+  {n:72, t:'Qualifier 2: TBC vs TBC', d:'2026-05-29', v:'TBC', r:'', playoff:true},
+  {n:73, t:'Eliminator: TBC vs TBC', d:'2026-05-27', v:'TBC', r:'', playoff:true},
+  {n:74, t:'Final: TBC vs TBC', d:'2026-05-31', v:'TBC', r:'', playoff:true},
+];
+
+// ═══════════════════════════════════════════════
+//  PLAYER DATA BY MATCH
+// ═══════════════════════════════════════════════
+const PLAYERS_BY_MATCH = {
+  25: [ // GT vs KKR
+    {id:1,name:'Shubman Gill',team:'GT',role:'BAT',price:12,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/317000/317649.jpg'},
+    {id:2,name:'Jos Buttler',team:'GT',role:'WK',price:11,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/210000/210535.jpg'},
+    {id:3,name:'Sai Sudharsan',team:'GT',role:'BAT',price:9,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/349000/349988.jpg'},
+    {id:4,name:'Rashid Khan',team:'GT',role:'BOWL',price:11,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/291000/291762.jpg'},
+    {id:5,name:'Kagiso Rabada',team:'GT',role:'BOWL',price:11,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/268000/268073.jpg'},
+    {id:6,name:'Prasidh Krishna',team:'GT',role:'BOWL',price:10,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/307000/307618.jpg'},
+    {id:7,name:'Washington Sundar',team:'GT',role:'AR',price:9,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/291000/291766.jpg'},
+    {id:8,name:'Rahul Tewatia',team:'GT',role:'AR',price:8,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/291000/291761.jpg'},
+    {id:9,name:'Jason Holder',team:'GT',role:'AR',price:8,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/249000/249040.jpg'},
+    {id:10,name:'Shahrukh Khan',team:'GT',role:'BAT',price:7,img:null},
+    {id:11,name:'Kumar Kushagra',team:'GT',role:'WK',price:7,img:null},
+    {id:12,name:'Glenn Phillips',team:'GT',role:'BAT',price:8,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/307000/307617.jpg'},
+    {id:13,name:'Nishant Sindhu',team:'GT',role:'AR',price:6,img:null},
+    {id:14,name:'Gurnoor Singh Brar',team:'GT',role:'BOWL',price:7,img:null},
+    {id:15,name:'Manav Suthar',team:'GT',role:'BOWL',price:6,img:null},
+    {id:16,name:'Sunil Narine',team:'KKR',role:'AR',price:11,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/187000/187008.jpg'},
+    {id:17,name:'Rinku Singh',team:'KKR',role:'BAT',price:9,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/341000/341478.jpg'},
+    {id:18,name:'Cameron Green',team:'KKR',role:'AR',price:10,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/320000/320996.jpg'},
+    {id:19,name:'Varun Chakaravarthy',team:'KKR',role:'BOWL',price:10,img:null},
+    {id:20,name:'Ajinkya Rahane',team:'KKR',role:'BAT',price:8,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/187000/187007.jpg'},
+    {id:21,name:'Rachin Ravindra',team:'KKR',role:'AR',price:9,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/320000/320997.jpg'},
+    {id:22,name:'Angkrish Raghuvanshi',team:'KKR',role:'BAT',price:8,img:null},
+    {id:23,name:'Matheesha Pathirana',team:'KKR',role:'BOWL',price:10,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/341000/341479.jpg'},
+    {id:24,name:'Vaibhav Arora',team:'KKR',role:'BOWL',price:7,img:null},
+    {id:25,name:'Tim Seifert',team:'KKR',role:'WK',price:7,img:null},
+    {id:26,name:'Ramandeep Singh',team:'KKR',role:'AR',price:7,img:null},
+    {id:27,name:'Rovman Powell',team:'KKR',role:'BAT',price:8,img:null},
+    {id:28,name:'Blessing Muzarabani',team:'KKR',role:'BOWL',price:7,img:null},
+    {id:29,name:'Finn Allen',team:'KKR',role:'BAT',price:8,img:'https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320/lsci/db/PICTURES/CMS/320000/320995.jpg'},
+  ],
+  // Add more matches as they approach — for now fall back to M25 pool
+};
+
+// ═══════════════════════════════════════════════
+//  LIVE DATA STATE
+// ═══════════════════════════════════════════════
+let LIVE_DATA = {
+  currentMatches: [],
+  seriesMatches: [],
+  pointsTable: null,
+  seriesStats: null,
+  lastFetched: null,
+};
+
+// FALLBACK STATIC DATA (used when API fails)
+const FALLBACK_TABLE = [
+  {pos:1,team:'PBKS',name:'Punjab Kings',m:5,w:4,l:0,nr:1,pts:9,nrr:'+1.450'},
+  {pos:2,team:'RCB',name:'Royal Challengers Bengaluru',m:5,w:4,l:1,nr:0,pts:8,nrr:'+1.503'},
+  {pos:3,team:'RR',name:'Rajasthan Royals',m:5,w:4,l:1,nr:0,pts:8,nrr:'+0.889'},
+  {pos:4,team:'SRH',name:'Sunrisers Hyderabad',m:5,w:2,l:3,nr:0,pts:4,nrr:'+0.576'},
+  {pos:5,team:'DC',name:'Delhi Capitals',m:4,w:2,l:2,nr:0,pts:4,nrr:'+0.322'},
+  {pos:6,team:'GT',name:'Gujarat Titans',m:4,w:2,l:2,nr:0,pts:4,nrr:'-0.029'},
+  {pos:7,team:'LSG',name:'Lucknow Super Giants',m:5,w:2,l:3,nr:0,pts:4,nrr:'-0.804'},
+  {pos:8,team:'CSK',name:'Chennai Super Kings',m:5,w:2,l:3,nr:0,pts:4,nrr:'-0.846'},
+  {pos:9,team:'MI',name:'Mumbai Indians',m:5,w:1,l:4,nr:0,pts:2,nrr:'-0.772'},
+  {pos:10,team:'KKR',name:'Kolkata Knight Riders',m:5,w:0,l:4,nr:1,pts:1,nrr:'-1.383'},
+];
+const FALLBACK_ORANGE = [
+  {name:'Virat Kohli',team:'RCB',runs:228},
+  {name:'Quinton de Kock',team:'MI',runs:225},
+  {name:'Heinrich Klaasen',team:'SRH',runs:224},
+  {name:'Rajat Patidar',team:'RCB',runs:222},
+  {name:'Ishan Kishan',team:'SRH',runs:213},
+];
+const FALLBACK_PURPLE = [
+  {name:'Prasidh Krishna',team:'GT',wkts:10},
+  {name:'Anshul Kamboj',team:'CSK',wkts:10},
+  {name:'Arshdeep Singh',team:'PBKS',wkts:10},
+  {name:'Ravi Bishnoi',team:'RR',wkts:9},
+  {name:'Prince Yadav',team:'LSG',wkts:9},
+];
+
+// ═══════════════════════════════════════════════
+//  API CALLS
+// ═══════════════════════════════════════════════
+async function apiCall(endpoint, params = {}) {
+  const url = new URL(`${API_BASE}/${endpoint}`);
+  url.searchParams.set('apikey', API_KEY);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k,v));
+  
+  try {
+    const res = await fetch(url.toString());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.status !== 'success') throw new Error(data.reason || 'API error');
+    return data;
+  } catch(e) {
+    console.warn('API call failed:', endpoint, e.message);
+    return null;
+  }
+}
+
+async function fetchCurrentMatches() {
+  const data = await apiCall('currentMatches', { offset: 0 });
+  if (!data?.data) return [];
+  // Filter IPL matches only
+  return data.data.filter(m => 
+    m.name?.toLowerCase().includes('ipl') || 
+    m.series?.toLowerCase().includes('indian premier league') ||
+    m.series?.toLowerCase().includes('ipl')
+  );
+}
+
+async function fetchSeriesMatches() {
+  const data = await apiCall('series_info', { id: IPL_SERIES_ID });
+  return data?.data?.matchList || [];
+}
+
+async function fetchPointsTable() {
+  // Try series standings
+  const data = await apiCall('series_points_table', { id: IPL_SERIES_ID });
+  return data?.data || null;
+}
+
+async function fetchSeriesStats() {
+  const data = await apiCall('series_stats', { id: IPL_SERIES_ID });
+  return data?.data || null;
+}
+
+async function refreshAllData() {
+  const ft = document.getElementById('freshness-text');
+  if (ft) ft.textContent = 'Refreshing...';
+  
+  try {
+    const [matches, seriesMatches, statsData] = await Promise.all([
+      fetchCurrentMatches(),
+      fetchSeriesMatches(),
+      fetchSeriesStats(),
+    ]);
+
+    LIVE_DATA.currentMatches = matches || [];
+    LIVE_DATA.seriesMatches = seriesMatches || [];
+    LIVE_DATA.seriesStats = statsData;
+    LIVE_DATA.lastFetched = new Date();
+
+    // Update schedule results from API data
+    updateScheduleFromAPI();
+    
+  } catch(e) {
+    console.warn('Refresh failed, using cached/fallback data');
+  }
+
+  // Always render with whatever we have
+  renderDashboard();
+  renderPtsTable();
+  renderStats();
+  renderSchedule();
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+  if (ft) ft.textContent = `Live data · Last updated ${timeStr}`;
+  
+  const sf = document.getElementById('stats-freshness');
+  if (sf) sf.textContent = `Updated ${timeStr}`;
+}
+
+function updateScheduleFromAPI() {
+  if (!LIVE_DATA.seriesMatches.length) return;
+  
+  LIVE_DATA.seriesMatches.forEach(apiMatch => {
+    // Try to find matching schedule entry
+    const matchNum = extractMatchNum(apiMatch.name || '');
+    if (!matchNum) return;
+    
+    const sched = SCHEDULE_DATA.find(s => s.n === matchNum);
+    if (!sched || sched.n <= 24) return; // Don't overwrite known results
+    
+    if (apiMatch.status && apiMatch.status !== 'Match not started') {
+      // Match has a result or is live
+      if (apiMatch.matchWinner && !apiMatch.live) {
+        sched.r = formatResult(apiMatch);
+      }
+    }
+  });
+}
+
+function extractMatchNum(name) {
+  const m = name.match(/(\d+)(st|nd|rd|th)\s+Match/i) || name.match(/Match\s+(\d+)/i);
+  return m ? parseInt(m[1]) : null;
+}
+
+function formatResult(match) {
+  if (!match.matchWinner) return '';
+  // Try to get margin from status
+  return match.status || (match.matchWinner + ' won');
+}
+
+// ═══════════════════════════════════════════════
+//  DATE HELPERS
+// ═══════════════════════════════════════════════
+function today() {
+  return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+}
+
+function formatDate(isoDate) {
+  const d = new Date(isoDate + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
+}
+
+function getMatchStatus(isoDate) {
+  const t = today();
+  if (isoDate < t) return 'done';
+  if (isoDate === t) return 'today';
+  return 'upcoming';
+}
+
+function findNextMatch() {
+  const t = today();
+  // Find the first match on or after today with no result yet
+  return SCHEDULE_DATA
+    .filter(m => !m.playoff && m.d >= t && !m.r)
+    .sort((a,b) => a.d.localeCompare(b.d) || a.n - b.n)[0] || null;
+}
+
+function findLiveMatch() {
+  // First check API live data
+  if (LIVE_DATA.currentMatches.length > 0) {
+    return LIVE_DATA.currentMatches[0]; // Return first live IPL match
+  }
+  
+  // Fallback: check if today has a scheduled match
+  const t = today();
+  const todayMatches = SCHEDULE_DATA.filter(m => m.d === t && !m.playoff);
+  if (todayMatches.length > 0) {
+    // Assume it's live if after 7:30 PM IST
+    const now = new Date();
+    const ist = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+    if (ist.getHours() >= 19) {
+      return { fromSchedule: true, matchData: todayMatches[0] };
+    }
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════
+//  RENDER DASHBOARD
+// ═══════════════════════════════════════════════
+function renderDashboard() {
+  const liveMatch = findLiveMatch();
+  const nextMatch = findNextMatch();
+  const t = today();
+
+  // LIVE SECTION
+  const liveSection = document.getElementById('live-section');
+  const nextSection = document.getElementById('next-section');
+
+  if (liveMatch) {
+    liveSection.style.display = 'block';
+    
+    if (liveMatch.fromSchedule) {
+      // Show from schedule data
+      const m = liveMatch.matchData;
+      const teams = m.t.split(' vs ');
+      const t1 = teams[0]?.trim(), t2 = teams[1]?.trim();
+      document.getElementById('live-match-label').textContent = `MATCH ${m.n}`;
+      document.getElementById('live-scores').innerHTML = `
+        <div style="margin-top:.5rem">
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:.4rem">${m.t}</div>
+          <div style="font-size:.85rem;color:#FF7070;font-weight:600">🔴 Match in progress — check Hotstar/Star Sports for live scores</div>
+        </div>`;
+      document.getElementById('live-meta').innerHTML = `<span>🏟️ ${m.v}</span><span>📅 Today</span>`;
+    } else {
+      // Full API data
+      const m = liveMatch;
+      document.getElementById('live-match-label').textContent = m.name || 'LIVE MATCH';
+      let scoresHtml = '';
+      if (m.score?.length) {
+        scoresHtml = m.score.map(s => `
+          <div class="score-row">
+            <div class="score-team">${s.inning?.replace(' Inning 1','').replace(' Inning 2','')}</div>
+            <div>
+              <div class="score-runs">${s.r}/${s.w}</div>
+              <div class="score-overs">${s.o} overs</div>
+            </div>
+          </div>`).join('');
+      } else {
+        scoresHtml = `<div style="color:var(--muted);padding:.5rem 0">Match in progress</div>`;
+      }
+      document.getElementById('live-scores').innerHTML = scoresHtml;
+      document.getElementById('live-meta').innerHTML = `
+        <span>🏟️ ${m.venue || ''}</span>
+        <span style="color:#FF7070;font-weight:600">${m.status || 'Live'}</span>`;
+    }
+
+    // Show next match underneath if different from live
+    if (nextMatch && (!liveMatch.fromSchedule || liveMatch.matchData?.n !== nextMatch.n)) {
+      nextSection.style.display = 'block';
+      renderNextMatchCard(nextMatch);
+    } else if (nextMatch && liveMatch.fromSchedule && liveMatch.matchData?.n === nextMatch.n) {
+      nextSection.style.display = 'none';
+    }
+  } else {
+    liveSection.style.display = 'none';
+    if (nextMatch) {
+      nextSection.style.display = 'block';
+      renderNextMatchCard(nextMatch);
+    } else {
+      nextSection.style.display = 'none';
+    }
+  }
+
+  // LAST RESULT
+  const lastDone = [...SCHEDULE_DATA].filter(m => m.r && !m.playoff).sort((a,b)=>b.n-a.n)[0];
+  if (lastDone) {
+    document.getElementById('last-result-title').textContent = `Match ${lastDone.n}: ${lastDone.t}`;
+    document.getElementById('last-result-detail').textContent = lastDone.r + ' · ' + formatDate(lastDone.d);
+  }
+
+  // DASH SUBTITLE
+  const sub = document.getElementById('dash-sub');
+  if (sub && nextMatch) {
+    const diff = Math.ceil((new Date(nextMatch.d) - new Date(t)) / 86400000);
+    sub.textContent = diff === 0 ? `Match ${nextMatch.n} is TODAY!` :
+      diff === 1 ? `Match ${nextMatch.n} is TOMORROW — get your XI in!` :
+      `Match ${nextMatch.n} is in ${diff} days`;
+  }
+
+  updateDashStatus();
+}
+
+function renderNextMatchCard(m) {
+  const teams = m.t.split(' vs ');
+  const t1code = teams[0]?.trim(), t2code = teams[1]?.trim();
+  const t1 = TEAM_ICONS[t1code] || {e:'🏏',bg:'var(--surf)'};
+  const t2 = TEAM_ICONS[t2code] || {e:'🏏',bg:'var(--surf)'};
+  
+  const t = today();
+  const diff = Math.ceil((new Date(m.d) - new Date(t)) / 86400000);
+  const whenLabel = diff === 0 ? 'TODAY' : diff === 1 ? 'TOMORROW' : formatDate(m.d);
+
+  document.getElementById('next-num').textContent = m.n;
+  document.getElementById('next-teams').innerHTML = `
+    <div class="match-team">
+      <div class="team-icon" style="background:${t1.bg}">${t1.e}</div>
+      <div><div class="team-nm">${ABBR_TO_FULL[t1code]||t1code}</div><div class="team-ab">${t1code}</div></div>
+    </div>
+    <div class="vs">VS</div>
+    <div class="match-team right">
+      <div class="team-icon" style="background:${t2.bg}">${t2.e}</div>
+      <div><div class="team-nm">${ABBR_TO_FULL[t2code]||t2code}</div><div class="team-ab">${t2code}</div></div>
+    </div>`;
+  document.getElementById('next-meta').innerHTML = `
+    <span>📅 ${whenLabel} · ${formatDate(m.d)}</span>
+    <span>⏰ 7:30 PM IST</span>
+    <span>🏟️ ${m.v}</span>
+    <span>🔒 Deadline: 7:00 PM IST</span>`;
+
+  // Prediction buttons
+  document.getElementById('pred-btns').innerHTML = `
+    <button class="pred-btn ${S.prediction===t1code?'sel':''}" id="pred-t1" onclick="predict('${t1code}')">${t1.e} ${t1code} to Win</button>
+    <button class="pred-btn ${S.prediction===t2code?'sel':''}" id="pred-t2" onclick="predict('${t2code}')">${t2.e} ${t2code} to Win</button>`;
+
+  if (S.prediction) {
+    const b1=document.getElementById('pred-t1'), b2=document.getElementById('pred-t2');
+    if(b1) b1.classList.toggle('sel',S.prediction===t1code);
+    if(b2) b2.classList.toggle('sel',S.prediction===t2code);
+    const msg=document.getElementById('pred-msg');
+    if(msg){msg.style.display='block';msg.textContent=`🎯 You predicted ${S.prediction} to win Match ${m.n}.`;}
+  }
+
+  // Update builder info
+  const bmi = document.getElementById('builder-match-info');
+  if (bmi) bmi.textContent = `Match ${m.n} · ${m.t} · ${m.v} · ${formatDate(m.d)}`;
+  const bqs = document.getElementById('builder-qsub');
+  if (bqs) bqs.textContent = `Pick 11 for Match ${m.n}`;
+
+  // Update team filter buttons
+  const fc1 = document.getElementById('fc-t1'), fc2 = document.getElementById('fc-t2');
+  if (fc1) { fc1.textContent = t1code; fc1.onclick = () => setFilter(t1code, fc1); }
+  if (fc2) { fc2.textContent = t2code; fc2.onclick = () => setFilter(t2code, fc2); }
+
+  // Load correct player pool
+  CURRENT_MATCH_PLAYERS = PLAYERS_BY_MATCH[m.n] || PLAYERS_BY_MATCH[25]; // fallback to M25
+  CURRENT_MATCH_NUM = m.n;
+}
+
+// ═══════════════════════════════════════════════
+//  POINTS TABLE
+// ═══════════════════════════════════════════════
+function renderPtsTable() {
+  const el = document.getElementById('pts-table');
+  if (!el) return;
+
+  // Try to parse API data, fall back to static
+  let tableData = FALLBACK_TABLE;
+  
+  if (LIVE_DATA.seriesStats?.pointsTable) {
+    try {
+      tableData = LIVE_DATA.seriesStats.pointsTable.map((t, i) => ({
+        pos: i+1,
+        team: getAbbr(t.teamName),
+        name: t.teamName,
+        m: t.matchesPlayed || 0,
+        w: t.matchesWon || 0,
+        l: t.matchesLost || 0,
+        nr: t.matchesNoResult || 0,
+        pts: t.points || 0,
+        nrr: (t.netRunRate >= 0 ? '+' : '') + (t.netRunRate || 0).toFixed(3),
+      }));
+    } catch(e) {}
+  }
+
+  const ua = document.getElementById('table-updated-at');
+  if (ua) ua.textContent = LIVE_DATA.lastFetched ? 
+    `Live · Updated ${LIVE_DATA.lastFetched.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}` :
+    'After Match 24 · 16 April 2026';
+
+  const pc = ['','p1','p2','p3','p4'];
+  el.innerHTML = `<thead><tr>
+    <th>Pos</th><th>Team</th><th>M</th><th>W</th><th>L</th><th>NR</th><th>Pts</th><th>NRR</th>
+  </tr></thead><tbody>` + tableData.map((s,i) => `
+    <tr class="${i===3?'playoff-border':''}">
+      <td class="pos-n ${pc[i+1]||''}">${s.pos}</td>
+      <td><div class="team-tag"><span class="ptag tc-${s.team}" style="font-size:.62rem">${s.team}</span>${s.name}</div></td>
+      <td>${s.m}</td><td>${s.w}</td><td>${s.l}</td><td>${s.nr}</td>
+      <td class="pts-num">${s.pts}</td>
+      <td class="${s.nrr?.startsWith('+')?'nrr-p':'nrr-n'}" style="font-weight:600">${s.nrr}</td>
+    </tr>`).join('') + '</tbody>';
+}
+
+function getAbbr(fullName) {
+  return TEAM_NAMES[fullName] || fullName?.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,4) || '???';
+}
+
+// ═══════════════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════════════
+function renderStats() {
+  let orange = FALLBACK_ORANGE;
+  let purple = FALLBACK_PURPLE;
+  let source = 'After Match 24 · 16 April 2026';
+
+  if (LIVE_DATA.seriesStats) {
+    try {
+      if (LIVE_DATA.seriesStats.batting?.mostRuns?.length) {
+        orange = LIVE_DATA.seriesStats.batting.mostRuns.slice(0,5).map(p => ({
+          name: p.name || p.fullName,
+          team: getAbbr(p.teamName || p.team),
+          runs: parseInt(p.runs) || 0,
+        }));
+      }
+      if (LIVE_DATA.seriesStats.bowling?.mostWickets?.length) {
+        purple = LIVE_DATA.seriesStats.bowling.mostWickets.slice(0,5).map(p => ({
+          name: p.name || p.fullName,
+          team: getAbbr(p.teamName || p.team),
+          wkts: parseInt(p.wickets) || 0,
+        }));
+      }
+      if (LIVE_DATA.lastFetched) {
+        source = `Live · Updated ${LIVE_DATA.lastFetched.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
+      }
+    } catch(e) {}
+  }
+
+  const ua = document.getElementById('stats-updated-at');
+  if (ua) ua.textContent = source;
+
+  const liveTag = LIVE_DATA.lastFetched ? '<span class="live-tag">LIVE</span>' : '';
+
+  const oc = document.getElementById('orange-cap');
+  if (oc) oc.innerHTML = orange.map((p,i) => `
+    <div class="cap-row">
+      <div class="crnum ${i===0?'first':''}">${i+1}</div>
+      <div class="crinfo"><div class="crname">${p.name}${i===0?liveTag:''}</div><div class="crteam">${ABBR_TO_FULL[p.team]||p.team}</div></div>
+      <div class="crstat" style="color:var(--orange)">${p.runs}</div>
+    </div>`).join('');
+
+  const pc = document.getElementById('purple-cap');
+  if (pc) pc.innerHTML = purple.map((p,i) => {
+    const tied = i < purple.length-1 && purple[i+1]?.wkts === p.wkts;
+    const prevTied = i > 0 && purple[i-1]?.wkts === p.wkts;
+    const rank = prevTied ? '' : (tied ? i+1+'=' : i+1);
+    return `<div class="cap-row">
+      <div class="crnum ${i===0?'first':''}">${rank}</div>
+      <div class="crinfo"><div class="crname">${p.name}${i===0?liveTag:''}</div><div class="crteam">${ABBR_TO_FULL[p.team]||p.team}</div></div>
+      <div class="crstat" style="color:#C59AE8">${p.wkts}</div>
+    </div>`;}).join('');
+}
+
+// ═══════════════════════════════════════════════
+//  SCHEDULE RENDER
+// ═══════════════════════════════════════════════
+function renderSchedule() {
+  const el = document.getElementById('sched-list');
+  if (!el) return;
+
+  const t = today();
+  const league = SCHEDULE_DATA.filter(m => !m.playoff);
+  const knockouts = SCHEDULE_DATA.filter(m => m.playoff).sort((a,b) => a.d.localeCompare(b.d));
+
+  let html = league.map(m => {
+    const status = m.r ? 'done' : m.d === t ? 'live-now' : '';
+    const isNext = !m.r && m.d >= t && !SCHEDULE_DATA.find(x => !x.r && !x.playoff && x.d >= t && x.n < m.n);
+    const resultOrStatus = m.r ? m.r : 
+      m.d === t ? '🔴 Today · 7:30 PM IST' :
+      m.d > t ? 'Upcoming · ' + formatDate(m.d) : 'Upcoming';
+    const color = m.r ? 'var(--gl)' : m.d === t ? '#FF7070' : isNext ? 'var(--gold)' : 'var(--muted)';
+    return `
+      <div class="sched-item ${status} ${isNext&&!m.r?'next-up':''}">
+        <div class="snum">${m.n}</div>
+        <div class="steams"><b>${isNext&&!m.r?'⭐ ':''}${m.t}</b><div class="svenue">${m.v}</div></div>
+        <div>
+          <div class="sdate">${formatDate(m.d)}</div>
+          <div class="sresult" style="color:${color}">${resultOrStatus}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  html += `<div style="margin:1.3rem 0 .8rem;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#C59AE8">⚡ KNOCKOUT STAGE</div>`;
+  html += knockouts.map(m => `
+    <div class="sched-item playoff">
+      <div class="snum" style="color:#C59AE8">${m.n}</div>
+      <div class="steams"><b>${m.t}</b><div class="svenue" style="color:#C59AE8;opacity:.6">${m.v}</div></div>
+      <div>
+        <div class="sdate">${formatDate(m.d)}</div>
+        <div class="sresult" style="color:#C59AE8">TBC · To be confirmed</div>
+      </div>
+    </div>`).join('');
+
+  el.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════
+let S = { user:null, xi:[], captain:null, budget:100, prediction:null, leagues:[], roleFilter:'all' };
+let CURRENT_MATCH_PLAYERS = PLAYERS_BY_MATCH[25];
+let CURRENT_MATCH_NUM = 25;
+
+function loadLocal() {
+  try {
+    const d = JSON.parse(localStorage.getItem('cd26_local') || '{}');
+    S.xi = d.xi || []; S.captain = d.captain || null;
+    S.prediction = d.prediction || null; S.leagues = d.leagues || [];
+    recalcBudget();
+  } catch(e) {}
+}
+function saveLocal() {
+  localStorage.setItem('cd26_local', JSON.stringify({xi:S.xi,captain:S.captain,prediction:S.prediction,leagues:S.leagues}));
+}
+function recalcBudget() {
+  S.budget = 100 - S.xi.reduce((sum,id) => {
+    const p = CURRENT_MATCH_PLAYERS.find(x=>x.id===id);
+    return sum + (p?p.price:0);
+  }, 0);
+}
+
+function register() {
+  const name = document.getElementById('reg-name').value.trim();
+  const user = document.getElementById('reg-user').value.trim().toLowerCase().replace(/\s+/g,'_');
+  const pass = document.getElementById('reg-pass').value;
+  if (!name||!user||!pass) { toast('Fill in all fields','e'); return; }
+
+  const users = JSON.parse(localStorage.getItem('cd26_u') || '{}');
+  if (users[user]) { toast('Username already taken — try another','e'); return; }
+  users[user] = { name, username:user, pass, totalPoints:0 };
+  localStorage.setItem('cd26_u', JSON.stringify(users));
+
+  S.user = { name, username:user, totalPoints:0 };
+  localStorage.setItem('cd26_session', JSON.stringify(S.user));
+
+  const joinCode = document.getElementById('join-code-landing')?.value?.trim()?.toUpperCase();
+  closeModal('m-reg');
+  loadLocal();
+  boot();
+  toast(`Welcome to CricketDraft, ${name}! 🏏`, 'g');
+  if (joinCode) setTimeout(() => doJoin(joinCode), 400);
+}
+
+function login() {
+  const user = document.getElementById('log-user').value.trim().toLowerCase().replace(/\s+/g,'_');
+  const pass = document.getElementById('log-pass').value;
+  if (!user||!pass) { toast('Enter username and password','e'); return; }
+
+  const users = JSON.parse(localStorage.getItem('cd26_u') || '{}');
+  const u = users[user];
+  if (!u || u.pass !== pass) { toast('Wrong username or password — check your details','e'); return; }
+
+  S.user = { name:u.name, username:user, totalPoints:u.totalPoints||0 };
+  localStorage.setItem('cd26_session', JSON.stringify(S.user));
+  closeModal('m-login');
+  loadLocal();
+  boot();
+  toast(`Welcome back, ${S.user.name}! 🏏`, 'g');
+}
+
+function guestIn() {
+  S.user = { name:'Guest Player', username:'guest', totalPoints:0, isGuest:true };
+  localStorage.setItem('cd26_session', JSON.stringify(S.user));
+  closeModal('m-reg');
+  loadLocal();
+  boot();
+  toast('Playing as Guest — progress saved on this device only','i');
+}
+
+function signOut() {
+  if (!confirm('Sign out?')) return;
+  localStorage.removeItem('cd26_session');
+  S = { user:null, xi:[], captain:null, budget:100, prediction:null, leagues:[], roleFilter:'all' };
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('landing').classList.add('active');
+}
+
+function boot() {
+  document.getElementById('landing').classList.remove('active');
+  document.getElementById('app').classList.add('active');
+  document.getElementById('nav-av').textContent = S.user.name.charAt(0).toUpperCase();
+  document.getElementById('nav-nm').textContent = S.user.name.split(' ')[0];
+  document.getElementById('dash-name').textContent = S.user.name.split(' ')[0];
+  document.getElementById('dash-total').textContent = S.user.totalPoints || 0;
+  renderMyLeagues();
+  updateDashStatus();
+}
+
+// ═══════════════════════════════════════════════
+//  NAV
+// ═══════════════════════════════════════════════
+function goTab(t) {
+  document.querySelectorAll('.tab').forEach(x => x.style.display='none');
+  document.querySelectorAll('.ntab').forEach(x => x.classList.remove('active'));
+  const el = document.getElementById('tab-'+t);
+  if (el) el.style.display = 'block';
+  const tabs = ['dashboard','builder','leagues','stats','table','schedule'];
+  const i = tabs.indexOf(t);
+  if (i>=0) document.querySelectorAll('.ntab')[i].classList.add('active');
+  if (t==='builder') renderPlayers();
+  window.scrollTo(0,0);
+}
+function switchItab(id, btn) {
+  document.querySelectorAll('.itp').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.itab').forEach(x => x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else document.querySelectorAll('.itab')[1]?.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+//  BUILDER
+// ═══════════════════════════════════════════════
+function canAdd(p) { return !S.xi.includes(p.id) && S.xi.length<11 && S.budget>=p.price; }
+
+function addPlayer(id) {
+  const p = CURRENT_MATCH_PLAYERS.find(x=>x.id===id);
+  if (!p) return;
+  if (S.xi.includes(id)) { toast('Already in your XI','i'); return; }
+  if (S.xi.length>=11) { toast('XI full — remove a player first','e'); return; }
+  if (S.budget<p.price) { toast('Not enough budget!','e'); return; }
+  S.xi.push(id); recalcBudget(); saveLocal(); renderPlayers(); renderPitch(); updateBudgetUI(); updateReqs();
+  toast(`${p.name} added!`,'s');
+}
+function removePlayer(id) {
+  S.xi = S.xi.filter(x=>x!==id);
+  if (S.captain===id) S.captain=null;
+  recalcBudget(); saveLocal(); renderPlayers(); renderPitch(); updateBudgetUI(); updateReqs();
+}
+function clearXI() {
+  S.xi=[]; S.captain=null; recalcBudget(); saveLocal();
+  renderPlayers(); renderPitch(); updateBudgetUI(); updateReqs();
+  toast('XI cleared','i');
+}
+function updateBudgetUI() {
+  const n=document.getElementById('budget-num'), f=document.getElementById('bfill'), i=document.getElementById('xi-info');
+  if (n) n.textContent = S.budget;
+  if (f) { f.style.width=S.budget+'%'; f.style.background=S.budget<15?'linear-gradient(90deg,#C0392B,#E74C3C)':S.budget<30?'linear-gradient(90deg,#E67E22,#F39C12)':'linear-gradient(90deg,#27AE60,#F5B942)'; }
+  if (i) { const cap=S.captain?CURRENT_MATCH_PLAYERS.find(p=>p.id===S.captain)?.name:'None'; i.innerHTML=`Selected: <span>${S.xi.length}</span>/11 · Captain: <span>${cap}</span>`; }
+}
+function updateReqs() {
+  const sel = S.xi.map(id=>CURRENT_MATCH_PLAYERS.find(p=>p.id===id)).filter(Boolean);
+  const r = (id,val,min,lbl) => { const el=document.getElementById(id); if(!el)return; el.textContent=lbl+' '+val+'/'+min; el.classList.toggle('ok',val>=min); };
+  r('rc-bat',sel.filter(p=>p.role==='BAT').length,3,'🏏 BAT');
+  r('rc-bowl',sel.filter(p=>p.role==='BOWL').length,3,'🎳 BOWL');
+  r('rc-wk',sel.filter(p=>p.role==='WK').length,1,'🧤 WK');
+  r('rc-ar',sel.filter(p=>p.role==='AR').length,2,'⭐ AR');
+  const tot=document.getElementById('rc-tot'); if(tot){tot.textContent=`👥 ${sel.length}/11`;tot.classList.toggle('ok',sel.length===11);}
+}
+function renderPlayers() {
+  const list=document.getElementById('plist'); if(!list)return;
+  const q=(document.getElementById('psearch')?.value||'').toLowerCase();
+  let ps=[...CURRENT_MATCH_PLAYERS];
+  if (S.roleFilter !== 'all') {
+    if (['BAT','BOWL','WK','AR'].includes(S.roleFilter)) ps=ps.filter(p=>p.role===S.roleFilter);
+    else ps=ps.filter(p=>p.team===S.roleFilter);
+  }
+  if (q) ps=ps.filter(p=>p.name.toLowerCase().includes(q)||p.team.toLowerCase().includes(q));
+  ps.sort((a,b)=>b.price-a.price);
+  const rl={BAT:'🏏 Batter',BOWL:'🎳 Bowler',WK:'🧤 Keeper',AR:'⭐ All-rounder'};
+  list.innerHTML = ps.map(p => {
+    const sel=S.xi.includes(p.id),cap=S.captain===p.id,dis=!sel&&!canAdd(p);
+    const init=p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const ph=p.img?`<img src="${p.img}" onerror="this.parentElement.innerHTML='${init}'" loading="lazy"/>`:`<span>${init}</span>`;
+    return `<div class="pcard ${sel?'sel':''} ${dis?'dis':''}" onclick="${sel?'removePlayer('+p.id+')':'addPlayer('+p.id+')'}">
+      <div class="pav">${ph}</div>
+      <div class="pinfo">
+        <div class="pname">${p.name}${cap?' <span style="color:var(--gold);font-size:.75rem">👑C</span>':''}</div>
+        <div class="pmeta"><span class="ptag tc-${p.team}">${p.team}</span><span class="prole">${rl[p.role]||p.role}</span></div>
+      </div>
+      <div class="pprice">${p.price}</div>
+      <button class="padd ${sel?'added':''}" onclick="event.stopPropagation();${sel?'removePlayer('+p.id+')':'addPlayer('+p.id+')'}">${sel?'✓':'+'}</button>
+    </div>`;
+  }).join('');
+}
+function renderPitch() {
+  const c=document.getElementById('pitch-rows'); if(!c)return;
+  const sel=S.xi.map(id=>CURRENT_MATCH_PLAYERS.find(p=>p.id===id)).filter(Boolean);
+  const groups=[
+    {label:'🎳 BOWLERS',players:sel.filter(p=>p.role==='BOWL')},
+    {label:'⭐ ALL-ROUNDERS',players:sel.filter(p=>p.role==='AR')},
+    {label:'🏏 BATTERS',players:sel.filter(p=>p.role==='BAT')},
+    {label:'🧤 KEEPER',players:sel.filter(p=>p.role==='WK')},
+  ];
+  const tc={GT:'#4ECDC4',KKR:'#C59AE8',MI:'#4AABFF',PBKS:'#FF8080',RCB:'#FF7070',CSK:'#FFD700',DC:'#6699FF',SRH:'#FF8C42',RR:'#FF6EC7',LSG:'#5BC8F5'};
+  c.innerHTML = groups.map(g => !g.players.length ? '' :
+    `<div><div class="prow-lbl">${g.label}</div><div class="prow">
+      ${g.players.map(p => {
+        const cap=S.captain===p.id;
+        const init=p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        return `<div class="pp"><button class="rm" onclick="removePlayer(${p.id})">✕</button>
+          <div class="pp-av ${cap?'cap':''}" style="border-color:${tc[p.team]||'rgba(255,255,255,.25)'}">
+            ${p.img?`<img src="${p.img}" onerror="this.style.display='none'" loading="lazy">`:''}
+            <span style="position:absolute;${p.img?'display:none':''}">${init}</span>
+            ${cap?'<span style="position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:900;color:var(--navy)">C</span>':''}
+          </div>
+          <div class="pp-name">${p.name.split(' ').pop()}</div>
+          <div class="pp-price">${p.price}</div></div>`;
+      }).join('')}</div></div>`
+  ).join('');
+}
+function setFilter(f, btn) {
+  S.roleFilter=f;
+  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active'); renderPlayers();
+}
+let tempCap=null;
+function openCapModal() {
+  if (!S.xi.length) { toast('Add players first!','e'); return; }
+  tempCap=S.captain;
+  document.getElementById('cap-grid').innerHTML = S.xi.map(id => {
+    const p=CURRENT_MATCH_PLAYERS.find(x=>x.id===id); if(!p)return'';
+    const init=p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const ph=p.img?`<img src="${p.img}" onerror="this.parentElement.innerHTML='${init}'" style="width:44px;height:44px;border-radius:50%;object-fit:cover" loading="lazy">`:`<span>${init}</span>`;
+    return `<div class="cap-opt ${S.captain===p.id?'sel':''}" id="co-${p.id}" onclick="selectTempCap(${p.id})">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto;font-weight:700">${ph}</div>
+      <div class="cap-opt-name">${p.name.split(' ').slice(-1)[0]}</div>
+      <div class="cap-opt-price">${p.team} · ${p.price}</div>
+    </div>`;
+  }).join('');
+  openModal('m-cap');
+}
+function selectTempCap(id) {
+  tempCap=id;
+  document.querySelectorAll('.cap-opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('co-'+id)?.classList.add('sel');
+}
+function confirmCap() {
+  if (!tempCap) { toast('Select a captain!','e'); return; }
+  S.captain=tempCap; saveLocal(); closeModal('m-cap'); renderPitch(); updateBudgetUI();
+  toast(`👑 ${CURRENT_MATCH_PLAYERS.find(x=>x.id===tempCap)?.name} is your captain!`,'g');
+}
+function validateXI() {
+  const sel=S.xi.map(id=>CURRENT_MATCH_PLAYERS.find(p=>p.id===id)).filter(Boolean);
+  if (sel.length<11) return `Select 11 players (${sel.length} selected)`;
+  if (sel.filter(p=>p.role==='BAT').length<3) return 'Need at least 3 Batters';
+  if (sel.filter(p=>p.role==='BOWL').length<3) return 'Need at least 3 Bowlers';
+  if (sel.filter(p=>p.role==='WK').length<1) return 'Need at least 1 Wicketkeeper';
+  if (sel.filter(p=>p.role==='AR').length<2) return 'Need at least 2 All-rounders';
+  if (!S.captain) return 'Set your Captain first';
+  return null;
+}
+function submitXI() {
+  const e=validateXI(); if(e){toast(e,'e');return;}
+  saveLocal(); updateDashStatus();
+  toast(`✅ XI locked for Match ${CURRENT_MATCH_NUM}! Good luck!`,'g'); goTab('dashboard');
+}
+function updateDashStatus() {
+  const el=document.getElementById('xi-dash-status'); if(!el)return;
+  if (S.xi.length===11&&S.captain) { el.style.color='var(--gl)'; el.textContent=`✅ XI locked for Match ${CURRENT_MATCH_NUM}`; }
+  else { el.style.color='var(--red)'; el.textContent=`⚠ ${S.xi.length}/11 selected`; }
+}
+
+// PREDICTION
+function predict(team) {
+  if (S.prediction) { toast('Already predicted!','i'); return; }
+  S.prediction=team; saveLocal();
+  const b1=document.getElementById('pred-t1'), b2=document.getElementById('pred-t2');
+  if(b1) b1.classList.toggle('sel', b1.textContent.startsWith(team) || b1.textContent.includes(team));
+  if(b2) b2.classList.toggle('sel', b2.textContent.startsWith(team) || b2.textContent.includes(team));
+  const msg=document.getElementById('pred-msg');
+  if(msg){msg.style.display='block';msg.textContent=`🎯 You predicted ${team} to win Match ${CURRENT_MATCH_NUM}.`;}
+  toast(`Locked: ${team} to win! +100 pts if correct 🎯`,'g');
+}
+
+// LEAGUES (local only)
+function genCode(){return Math.random().toString(36).substr(2,6).toUpperCase();}
+function createLeague(){
+  const name=document.getElementById('l-name').value.trim();
+  if(!name){toast('Enter a league name','e');return;}
+  const code=genCode();
+  const all=JSON.parse(localStorage.getItem('cd26_lg')||'{}');
+  all[code]={id:code,name,desc:document.getElementById('l-desc').value.trim(),members:[{user:S.user.username,name:S.user.name,points:0,matches:0}]};
+  localStorage.setItem('cd26_lg',JSON.stringify(all));
+  S.leagues.push(code); saveLocal();
+  document.getElementById('l-name').value='';document.getElementById('l-desc').value='';
+  toast(`League created! Code: ${code}`,'g');
+  switchItab('my-leagues',null); renderMyLeagues();
+  document.getElementById('league-dash-count').textContent=`${S.leagues.length} league${S.leagues.length!==1?'s':''} joined`;
+}
+function joinByCode(){
+  const code=document.getElementById('l-code').value.trim().toUpperCase();
+  doJoin(code); document.getElementById('l-code').value='';
+}
+function doJoin(code){
+  if(!code||code.length<4){toast('Enter a valid code','e');return;}
+  if(S.leagues.includes(code)){toast('Already in this league!','i');return;}
+  const all=JSON.parse(localStorage.getItem('cd26_lg')||'{}');
+  const lg=all[code];
+  if(!lg){toast('League not found — check the code and make sure you\'re on the same device as the creator','e');return;}
+  if(!lg.members.find(m=>m.user===S.user.username)) lg.members.push({user:S.user.username,name:S.user.name,points:0,matches:0});
+  all[code]=lg; localStorage.setItem('cd26_lg',JSON.stringify(all));
+  S.leagues.push(code); saveLocal();
+  toast(`Joined "${lg.name}"! 🏆`,'g');
+  renderMyLeagues();
+  document.getElementById('league-dash-count').textContent=`${S.leagues.length} league${S.leagues.length!==1?'s':''} joined`;
+}
+function renderMyLeagues(){
+  const el=document.getElementById('my-leagues-list'); if(!el)return;
+  if(!S.leagues.length){
+    el.innerHTML=`<div class="empty"><div class="em">🏆</div><h3>No leagues yet</h3><p>Create a league and invite friends!</p><button class="btn btn-gold" style="margin-top:1rem" onclick="switchItab('create-l',null)">Create League</button></div>`;
+    return;
+  }
+  const all=JSON.parse(localStorage.getItem('cd26_lg')||'{}');
+  el.innerHTML=S.leagues.map(code=>{const lg=all[code];if(!lg)return'';return`
+    <div class="league-card" onclick="openLeague('${code}')">
+      <div style="width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--red));display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">🏆</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:1rem">${lg.name}</div>
+      <div style="font-size:.77rem;color:var(--muted);margin-top:.18rem">${lg.members?.length||1} member${(lg.members?.length||1)!==1?'s':''} · Code: <span style="color:var(--gold);font-weight:700;letter-spacing:2px">${code}</span></div></div>
+      <span style="color:var(--muted);font-size:1.1rem">›</span>
+    </div>`;}).join('');
+  document.getElementById('league-dash-count').textContent=`${S.leagues.length} league${S.leagues.length!==1?'s':''} joined`;
+}
+function openLeague(code){
+  const all=JSON.parse(localStorage.getItem('cd26_lg')||'{}');
+  const lg=all[code]; if(!lg)return;
+  document.getElementById('ld-name').textContent=lg.name;
+  document.getElementById('ld-code').textContent=code;
+  document.getElementById('my-leagues-list').style.display='none';
+  const sorted=[...lg.members].sort((a,b)=>b.points-a.points);
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('ld-board').innerHTML=sorted.map((m,i)=>`
+    <div class="lb-row ${i===0?'r1':i===1?'r2':i===2?'r3':''}">
+      <div class="lb-rank">${medals[i]||i+1}</div>
+      <div class="lb-av">${m.name.charAt(0).toUpperCase()}</div>
+      <div class="lb-info"><div class="lb-name">${m.name} ${m.user===S.user?.username?'<span style="font-size:.68rem;color:var(--teal)">(You)</span>':''}</div>
+      <div class="lb-sub">${m.matches||0} matches played</div></div>
+      <div class="lb-pts">${m.points||0}<br><span>pts</span></div>
+    </div>`).join('');
+  document.getElementById('league-detail').style.display='block';
+}
+function closeLeagueDetail(){document.getElementById('league-detail').style.display='none';document.getElementById('my-leagues-list').style.display='block';}
+function shareLeague(){
+  const code=document.getElementById('ld-code').textContent,name=document.getElementById('ld-name').textContent;
+  const url=window.location.href.split('?')[0];
+  const text=`Join my CricketDraft IPL 2026 fantasy league "${name}"!\n🔗 ${url}\nLeague code: ${code} 🏏`;
+  if(navigator.share) navigator.share({title:'CricketDraft',text,url});
+  else navigator.clipboard.writeText(text).then(()=>toast('Invite copied! 📋','s'));
+}
+
+// MODALS
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+function toast(msg,type='i'){
+  const c=document.getElementById('toast-con'),el=document.createElement('div');
+  el.className=`toast t-${type}`;el.textContent=msg;c.appendChild(el);
+  setTimeout(()=>el.remove(),3800);
+}
+
+// ═══════════════════════════════════════════════
+//  INIT — runs on page load
+// ═══════════════════════════════════════════════
+async function init() {
+  const loadingText = document.getElementById('loading-text');
+
+  // Restore session
+  const session = localStorage.getItem('cd26_session');
+  
+  // Fetch live data while showing loading screen
+  loadingText.textContent = 'Fetching live IPL data...';
+  
+  try {
+    const [matches, statsData] = await Promise.all([
+      fetchCurrentMatches(),
+      fetchSeriesStats(),
+    ]);
+    LIVE_DATA.currentMatches = matches || [];
+    LIVE_DATA.seriesStats = statsData;
+    LIVE_DATA.lastFetched = new Date();
+    loadingText.textContent = 'Data loaded ✓';
+  } catch(e) {
+    loadingText.textContent = 'Using cached data';
+  }
+
+  // Hide loading screen
+  await new Promise(r => setTimeout(r, 600));
+  document.getElementById('loading-screen').style.display = 'none';
+
+  if (session) {
+    try {
+      S.user = JSON.parse(session);
+      loadLocal();
+      boot();
+      renderDashboard();
+      renderPtsTable();
+      renderStats();
+      renderSchedule();
+    } catch(e) {
+      document.getElementById('landing').classList.add('active');
+    }
+  } else {
+    document.getElementById('landing').classList.add('active');
+  }
+
+  renderPitch(); updateBudgetUI(); updateReqs();
+
+  // Auto-refresh every 5 minutes
+  setInterval(refreshAllData, 5 * 60 * 1000);
+}
+
+init();
+</script>
+</body>
+</html>
