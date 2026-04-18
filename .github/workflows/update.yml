@@ -1,0 +1,21 @@
+name: Update IPL Data
+on:
+  schedule:
+    - cron: '30 19 * * *'  # Runs at midnight IST (7:30pm UTC) every day
+  workflow_dispatch:         # Also lets you trigger it manually
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: node .github/scripts/update.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Auto-update IPL data"
+        
